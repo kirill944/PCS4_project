@@ -2,10 +2,17 @@
 #define MAIN_WINDOW_H
 
 #include <QMainWindow>
+#include <QMenuBar>
+#include <QStatusBar>
+#include <QMessageBox>
+#include <QToolBar>
+#include <QIcon>
+#include <QFileDialog>
+#include <QInputDialog>
 #include "GraphWidget.h"
 
 class MainWindow : public QMainWindow {
-    Q_OBJECT  // Добавлен макрос Q_OBJECT
+    Q_OBJECT
 
 public:
     explicit MainWindow(QWidget* parent = nullptr);
@@ -14,6 +21,7 @@ public:
 private:
     GraphWidget* graphWidget;
     void setupMenuBar();
+    void setupToolBar();
 };
 
 #endif // MAIN_WINDOW_H
