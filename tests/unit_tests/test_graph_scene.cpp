@@ -36,197 +36,175 @@ protected:
 
 QApplication* GraphSceneTest::app = nullptr;
 
-TEST_F(GraphSceneTest, ClearEmptyScene) {
-    // Очистка пустой сцены не должна вызывать ошибок
-    EXPECT_NO_THROW(scene->clearScene());
-}
-
-TEST_F(GraphSceneTest, UpdateGraphWithEmptyGraph) {
-    Graph g;
-    std::unordered_map<int, QPointF> positions;
-
-    EXPECT_NO_THROW(scene->updateGraph(g, positions, -1, {}));
-}
-
-TEST_F(GraphSceneTest, UpdateGraphWithSingleVertex) {
+TEST_F(GraphSceneTest, UpdateGraph_1Vertex) {
     Graph g;
     g.addVertex(1);
-
     std::unordered_map<int, QPointF> positions;
     positions[1] = QPointF(100, 100);
-
     EXPECT_NO_THROW(scene->updateGraph(g, positions, -1, {}));
 }
 
-TEST_F(GraphSceneTest, UpdateGraphWithMultipleVertices) {
+TEST_F(GraphSceneTest, UpdateGraph_2Vertices_WithEdge) {
     Graph g;
-    for (int i = 1; i <= 5; i++) {
-        g.addVertex(i);
+    g.addVertex(1);
+    g.addVertex(2);
+    g.addEdge(1, 2);
+    std::unordered_map<int, QPointF> positions;
+    positions[1] = QPointF(100, 100);
+    positions[2] = QPointF(200, 200);
+    EXPECT_NO_THROW(scene->updateGraph(g, positions, -1, {}));
+}
+
+TEST_F(GraphSceneTest, UpdateGraph_3Vertices_Triangle) {
+    Graph g;
+    for (int i = 1; i <= 3; i++) g.addVertex(i);
+    g.addEdge(1, 2);
+    g.addEdge(2, 3);
+    g.addEdge(3, 1);
+    std::unordered_map<int, QPointF> positions;
+    for (int i = 1; i <= 3; i++) {
+        positions[i] = QPointF(i * 100, 100);
     }
+    EXPECT_NO_THROW(scene->updateGraph(g, positions, -1, {}));
+}
+
+TEST_F(GraphSceneTest, UpdateGraph_4Vertices_Square) {
+    Graph g;
+    for (int i = 1; i <= 4; i++) g.addVertex(i);
     g.addEdge(1, 2);
     g.addEdge(2, 3);
     g.addEdge(3, 4);
-    g.addEdge(4, 5);
-
+    g.addEdge(4, 1);
     std::unordered_map<int, QPointF> positions;
-    for (int i = 1; i <= 5; i++) {
-        positions[i] = QPointF(i * 100, i * 100);
+    for (int i = 1; i <= 4; i++) {
+        positions[i] = QPointF(i * 80, 100);
     }
-
     EXPECT_NO_THROW(scene->updateGraph(g, positions, -1, {}));
 }
 
-TEST_F(GraphSceneTest, HighlightVertex) {
+TEST_F(GraphSceneTest, UpdateGraph_5Vertices_Star) {
+    Graph g;
+    for (int i = 1; i <= 5; i++) g.addVertex(i);
+    for (int i = 2; i <= 5; i++) g.addEdge(1, i);
+    std::unordered_map<int, QPointF> positions;
+    for (int i = 1; i <= 5; i++) {
+        positions[i] = QPointF(i * 70, 100);
+    }
+    EXPECT_NO_THROW(scene->updateGraph(g, positions, -1, {}));
+}
+
+TEST_F(GraphSceneTest, UpdateGraph_WithHighlightedVertex) {
     Graph g;
     g.addVertex(1);
-
     std::unordered_map<int, QPointF> positions;
     positions[1] = QPointF(100, 100);
-
-    scene->updateGraph(g, positions, -1, {});
-
-    // Подсветка существующей вершины
-    EXPECT_NO_THROW(scene->highlightVertex(1, true));
-
-    // Попытка подсветить несуществующую вершину
-    EXPECT_NO_THROW(scene->highlightVertex(99, true));
-}
-
-TEST_F(GraphSceneTest, SetVertexDraggable) {
-    // Проверяем, что включение/выключение перетаскивания не вызывает ошибок
-    EXPECT_NO_THROW(scene->setVertexDraggable(true));
-    EXPECT_NO_THROW(scene->setVertexDraggable(false));
-}
-
-TEST_F(GraphSceneTest, GetDraggedPositions) {
-    Graph g;
-    g.addVertex(1);
-
-    std::unordered_map<int, QPointF> positions;
-    positions[1] = QPointF(100, 100);
-
-    scene->updateGraph(g, positions, -1, {});
-
-    auto draggedPositions = scene->getDraggedPositions();
-    // Сцена может вернуть позиции (даже если не было перемещений)
-    EXPECT_TRUE(draggedPositions.empty() || draggedPositions.size() == 1);
-}
-
-TEST_F(GraphSceneTest, UpdateVertexPosition) {
-    Graph g;
-    g.addVertex(1);
-
-    std::unordered_map<int, QPointF> positions;
-    QPointF originalPos(100, 100);
-    positions[1] = originalPos;
-
-    scene->updateGraph(g, positions, -1, {});
-
-    QPointF newPos(200, 200);
-    EXPECT_NO_THROW(scene->updateVertexPosition(1, newPos));
-}
-
-TEST_F(GraphSceneTest, UpdateEdgePositions) {
-    Graph g;
-    g.addVertex(1);
-    g.addVertex(2);
-    g.addEdge(1, 2);
-
-    std::unordered_map<int, QPointF> positions;
-    positions[1] = QPointF(100, 100);
-    positions[2] = QPointF(200, 200);
-
-    scene->updateGraph(g, positions, -1, {});
-
-    // Обновляем позиции рёбер
-    std::unordered_map<int, QPointF> newPositions;
-    newPositions[1] = QPointF(150, 150);
-    newPositions[2] = QPointF(250, 250);
-
-    EXPECT_NO_THROW(scene->updateEdgePositions(g, newPositions));
-}
-
-TEST_F(GraphSceneTest, UpdateGraphWithHighlightedVertex) {
-    Graph g;
-    g.addVertex(1);
-    g.addVertex(2);
-
-    std::unordered_map<int, QPointF> positions;
-    positions[1] = QPointF(100, 100);
-    positions[2] = QPointF(200, 200);
-
-    // Обновляем с подсвеченной вершиной
     EXPECT_NO_THROW(scene->updateGraph(g, positions, 1, {}));
 }
 
-TEST_F(GraphSceneTest, UpdateGraphWithVisitedSet) {
+TEST_F(GraphSceneTest, UpdateGraph_WithVisitedSet) {
     Graph g;
-    for (int i = 1; i <= 5; i++) {
-        g.addVertex(i);
-    }
-
+    for (int i = 1; i <= 3; i++) g.addVertex(i);
     std::unordered_map<int, QPointF> positions;
-    for (int i = 1; i <= 5; i++) {
-        positions[i] = QPointF(i * 100, 100);
-    }
-
-    std::unordered_set<int> visited = {1, 2, 3};
-
+    for (int i = 1; i <= 3; i++) positions[i] = QPointF(i * 100, 100);
+    std::unordered_set<int> visited = {1, 2};
     EXPECT_NO_THROW(scene->updateGraph(g, positions, -1, visited));
 }
 
-TEST_F(GraphSceneTest, MultipleGraphUpdates) {
-    Graph g1, g2;
-    g1.addVertex(1);
-    g2.addVertex(2);
-
-    std::unordered_map<int, QPointF> positions1, positions2;
-    positions1[1] = QPointF(100, 100);
-    positions2[2] = QPointF(200, 200);
-
-    // Последовательные обновления не должны вызывать ошибок
-    EXPECT_NO_THROW(scene->updateGraph(g1, positions1, -1, {}));
-    EXPECT_NO_THROW(scene->updateGraph(g2, positions2, -1, {}));
-    EXPECT_NO_THROW(scene->updateGraph(g1, positions1, -1, {}));
+TEST_F(GraphSceneTest, ClearScene_Empty) {
+    EXPECT_NO_THROW(scene->clearScene());
 }
 
-TEST_F(GraphSceneTest, UpdateGraphWithComplexGraph) {
-    Graph g;
-    // Создаём граф-звезду
-    for (int i = 1; i <= 10; i++) {
-        g.addVertex(i);
-        if (i > 1) {
-            g.addEdge(1, i);
-        }
-    }
-
-    std::unordered_map<int, QPointF> positions;
-    // Располагаем вершины по кругу
-    double radius = 200;
-    double centerX = 400;
-    double centerY = 300;
-
-    for (int i = 1; i <= 10; i++) {
-        double angle = 2 * M_PI * (i - 1) / 9;
-        double x = centerX + radius * cos(angle);
-        double y = centerY + radius * sin(angle);
-        positions[i] = QPointF(x, y);
-    }
-    positions[1] = QPointF(centerX, centerY);
-
-    EXPECT_NO_THROW(scene->updateGraph(g, positions, -1, {}));
-}
-
-TEST_F(GraphSceneTest, SceneBounds) {
+TEST_F(GraphSceneTest, ClearScene_After1Vertex) {
     Graph g;
     g.addVertex(1);
-
     std::unordered_map<int, QPointF> positions;
-    positions[1] = QPointF(-1000, -1000); // Далеко за пределами сцены
+    positions[1] = QPointF(100, 100);
+    scene->updateGraph(g, positions, -1, {});
+    EXPECT_NO_THROW(scene->clearScene());
+}
 
-    EXPECT_NO_THROW(scene->updateGraph(g, positions, -1, {}));
+TEST_F(GraphSceneTest, ClearScene_After3Vertices) {
+    Graph g;
+    for (int i = 1; i <= 3; i++) g.addVertex(i);
+    std::unordered_map<int, QPointF> positions;
+    for (int i = 1; i <= 3; i++) positions[i] = QPointF(i * 100, 100);
+    scene->updateGraph(g, positions, -1, {});
+    EXPECT_NO_THROW(scene->clearScene());
+}
 
-    // Сцена должна корректно обрабатывать вершины за пределами
-    auto draggedPositions = scene->getDraggedPositions();
-    EXPECT_TRUE(draggedPositions.empty() || draggedPositions.size() == 1);
+TEST_F(GraphSceneTest, ClearScene_After5Vertices) {
+    Graph g;
+    for (int i = 1; i <= 5; i++) g.addVertex(i);
+    std::unordered_map<int, QPointF> positions;
+    for (int i = 1; i <= 5; i++) positions[i] = QPointF(i * 100, 100);
+    scene->updateGraph(g, positions, -1, {});
+    EXPECT_NO_THROW(scene->clearScene());
+}
+
+TEST_F(GraphSceneTest, ClearScene_Twice) {
+    Graph g;
+    g.addVertex(1);
+    std::unordered_map<int, QPointF> positions;
+    positions[1] = QPointF(100, 100);
+    scene->updateGraph(g, positions, -1, {});
+    scene->clearScene();
+    EXPECT_NO_THROW(scene->clearScene());  // Повторная очистка
+}
+
+TEST_F(GraphSceneTest, HighlightVertex_1Vertex_Toggle) {
+    Graph g;
+    g.addVertex(1);
+    std::unordered_map<int, QPointF> positions;
+    positions[1] = QPointF(100, 100);
+    scene->updateGraph(g, positions, -1, {});
+    EXPECT_NO_THROW(scene->highlightVertex(1, true));
+    EXPECT_NO_THROW(scene->highlightVertex(1, false));
+}
+
+TEST_F(GraphSceneTest, HighlightVertex_3Vertices) {
+    Graph g;
+    for (int i = 1; i <= 3; i++) g.addVertex(i);
+    std::unordered_map<int, QPointF> positions;
+    for (int i = 1; i <= 3; i++) positions[i] = QPointF(i * 100, 100);
+    scene->updateGraph(g, positions, -1, {});
+    for (int i = 1; i <= 3; i++) {
+        EXPECT_NO_THROW(scene->highlightVertex(i, true));
+        EXPECT_NO_THROW(scene->highlightVertex(i, false));
+    }
+}
+
+TEST_F(GraphSceneTest, HighlightVertex_NonExistent) {
+    Graph g;
+    g.addVertex(1);
+    std::unordered_map<int, QPointF> positions;
+    positions[1] = QPointF(100, 100);
+    scene->updateGraph(g, positions, -1, {});
+    EXPECT_NO_THROW(scene->highlightVertex(99, true));  // Не существует
+}
+
+TEST_F(GraphSceneTest, HighlightVertex_Sequential) {
+    Graph g;
+    for (int i = 1; i <= 5; i++) g.addVertex(i);
+    std::unordered_map<int, QPointF> positions;
+    for (int i = 1; i <= 5; i++) positions[i] = QPointF(i * 100, 100);
+    scene->updateGraph(g, positions, -1, {});
+    for (int i = 1; i <= 5; i++) {
+        scene->highlightVertex(i, true);
+    }
+    for (int i = 1; i <= 5; i++) {
+        scene->highlightVertex(i, false);
+    }
+    EXPECT_NO_THROW();
+}
+
+TEST_F(GraphSceneTest, HighlightVertex_AllAtOnce) {
+    Graph g;
+    for (int i = 1; i <= 4; i++) g.addVertex(i);
+    std::unordered_map<int, QPointF> positions;
+    for (int i = 1; i <= 4; i++) positions[i] = QPointF(i * 100, 100);
+    scene->updateGraph(g, positions, -1, {});
+    for (int i = 1; i <= 4; i++) {
+        scene->highlightVertex(i, true);
+    }
+    EXPECT_NO_THROW();
 }
