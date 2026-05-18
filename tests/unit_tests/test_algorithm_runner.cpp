@@ -1,10 +1,6 @@
 #include <gtest/gtest.h>
 #include "AlgorithmRunner.h"
 
-// ==================== Тесты для AlgorithmRunner ====================
-// Внимание: Тесты runBFS/runDFS пропущены, так как они требуют QEventLoop
-// Для проверки асинхронной работы используйте отдельные сценарии
-
 // 2.1 getBFSTraversal() - 7 тестов
 
 TEST(AlgorithmRunnerTest, BFS_VertexCount1) {

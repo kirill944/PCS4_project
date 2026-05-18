@@ -75,9 +75,9 @@ int main() {
     // Проверяем
     if (loaded.vertexCount() == original.vertexCount() &&
         loaded.edgeCount() == original.edgeCount()) {
-        std::cout << "✓ Данные сохранены и загружены корректно!" << std::endl;
+        std::cout << "Данные сохранены и загружены корректно!" << std::endl;
     } else {
-        std::cout << "✗ Ошибка: данные не совпадают!" << std::endl;
+        std::cout << "Ошибка: данные не совпадают!" << std::endl;
     }
 
     return 0;

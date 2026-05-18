@@ -25,7 +25,7 @@ int main() {
     std::cout << std::endl;
 
     std::cout << "Ожидаемый порядок: 1,2,3,4,5,6,7 или 1,3,2,6,7,4,5" << std::endl;
-    std::cout << "✓ Сценарий BFS выполнен успешно!" << std::endl;
+    std::cout << "Сценарий BFS выполнен успешно!" << std::endl;
 
     return 0;
 }

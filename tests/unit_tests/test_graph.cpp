@@ -2,8 +2,6 @@
 #include "Graph.h"
 #include <algorithm>
 
-// ==================== Тесты для Graph ====================
-
 // 1.1 addVertex() - 6 тестов
 
 TEST(GraphTest, AddVertex_Single) {

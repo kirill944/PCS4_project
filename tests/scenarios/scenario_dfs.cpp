@@ -22,7 +22,7 @@ int main() {
     std::cout << std::endl;
 
     std::cout << "Ожидаемый порядок: 1,2,4,5,3 или 1,3,2,5,4" << std::endl;
-    std::cout << "✓ Сценарий DFS выполнен успешно!" << std::endl;
+    std::cout << "Сценарий DFS выполнен успешно!" << std::endl;
 
     return 0;
 }

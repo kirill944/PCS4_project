@@ -3,8 +3,6 @@
 #include "Graph.h"
 #include <cmath>
 
-// ==================== Тесты для GraphLayout ====================
-
 class GraphLayoutTest : public ::testing::Test {
 protected:
     void SetUp() override {

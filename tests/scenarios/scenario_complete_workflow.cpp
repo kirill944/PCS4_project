@@ -53,7 +53,7 @@ int main() {
     g.clear();
     std::cout << "   Вершин после очистки: " << g.vertexCount() << std::endl;
 
-    std::cout << "\n✓ Полный сценарий выполнен успешно!" << std::endl;
+    std::cout << "\nПолный сценарий выполнен успешно!" << std::endl;
 
     return 0;
 }

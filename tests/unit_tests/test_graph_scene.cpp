@@ -3,11 +3,9 @@
 #include <QApplication>
 #include <QGraphicsView>
 
-// Необходим QApplication для работы с графическими объектами
 class GraphSceneTest : public ::testing::Test {
 protected:
     static void SetUpTestSuite() {
-        // Создаём QApplication для тестов
         static int argc = 1;
         static char* argv[] = {const_cast<char*>("test")};
         app = new QApplication(argc, argv);
